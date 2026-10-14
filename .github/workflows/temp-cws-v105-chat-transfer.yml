@@ -1,0 +1,26 @@
+name: temp-cws-v105-chat-transfer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/temp-cws-v105-chat-transfer.yml
+
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 'https://cws-circleci-bridge-20261013.floot.app/_cdn/static/e0a466d3-4496-4133-bf0b-647b16e828f7-CWS-Market-Replay-v1.0.5-FINAL.apk' -o CWS-Market-Replay-v1.0.5-FINAL.apk
+          test "$(stat -c %s CWS-Market-Replay-v1.0.5-FINAL.apk)" = '94962027'
+          echo '889a9dc80155c7bbc783267d306ac85ee0a8c18c075d919ee178744e91157dc0  CWS-Market-Replay-v1.0.5-FINAL.apk' | sha256sum -c -
+      - name: Upload exact APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CWS-Market-Replay-v1.0.5-FINAL
+          path: CWS-Market-Replay-v1.0.5-FINAL.apk
+          compression-level: 0
+          retention-days: 1
